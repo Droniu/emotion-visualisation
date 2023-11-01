@@ -11,9 +11,12 @@ import {
 } from 'recharts';
 import { DataContext } from '../app/app';
 import themeColors from 'daisyui/src/theming/themes';
+import { useLocalStorage } from '@uidotdev/usehooks';
 
 export const Canvas2D = () => {
   const ctx = React.useContext(DataContext);
+  const [theme] = useLocalStorage('theme', 'dark');
+
   if (!ctx?.apiData) {
     // This should never happen xD
     return null;
@@ -24,17 +27,48 @@ export const Canvas2D = () => {
       score: value,
     })
   );
-  console.log(rechartsData);
 
   return (
     <ResponsiveContainer width="100%" height="80%">
       <BarChart data={rechartsData}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+        <CartesianGrid
+          strokeDasharray="3 3"
+          vertical={false}
+          horizontalFill={[
+            themeColors[`[data-theme=${theme as 'dark' | 'light'}]`][
+              'base-100'
+            ],
+            themeColors[`[data-theme=${theme as 'dark' | 'light'}]`][
+              'base-200'
+            ],
+          ]}
+        />
+        <XAxis
+          dataKey="name"
+          tick={{
+            fontSize: 9,
+            fill: themeColors[`[data-theme=${theme as 'dark' | 'light'}]`][
+              'base-content'
+            ],
+            fontFamily: 'sans-serif',
+          }}
+        />
         <YAxis />
-        <Tooltip />
+        <Tooltip
+          cursor={{
+            fill: themeColors[`[data-theme=${theme as 'dark' | 'light'}]`][
+              'base-300'
+            ],
+            fillOpacity: 0.5,
+          }}
+        />
         <Legend />
-        <Bar dataKey="score" fill={themeColors['[data-theme=dark]'].primary} />
+        <Bar
+          dataKey="score"
+          fill={
+            themeColors[`[data-theme=${theme as 'dark' | 'light'}]`].primary
+          }
+        />
       </BarChart>
     </ResponsiveContainer>
   );
