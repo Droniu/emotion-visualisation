@@ -1,6 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React from 'react';
 import styles from './app.module.css';
+import { Navbar } from '../components/Navbar';
 
 // import NxWelcome from './nx-welcome';
 
@@ -24,10 +25,13 @@ export function App() {
     console.log(apiData);
   }, [apiData]);
   return (
-    <div>
-      <h1>Hello frontend!</h1>
-      <p>API data: {apiData?.message ?? 'Loading...'}</p>
-    </div>
+    <>
+      <Navbar />
+      <div className="flex flex-col justify-center items-center h-full">
+        <h1 className="text-3xl font-bold underline">Hello frontend!</h1> <br />
+        <p>API data: {apiData?.message ?? 'Loading...'}</p>
+      </div>
+    </>
   );
 }
 
