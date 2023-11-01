@@ -48,7 +48,9 @@
   "dependencies": {
     "@swc/helpers": "~0.5.2",
     "@uidotdev/usehooks": "^2.4.1",
+    "clsx": "^2.0.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "recharts": "^2.9.2"
   }
 }
