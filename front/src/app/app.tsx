@@ -1,33 +1,50 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React from 'react';
-import styles from './app.module.css';
+import { Navbar } from '../components/Navbar';
 
-// import NxWelcome from './nx-welcome';
+import { EMOTIONS } from '../consts';
+import { Welcome } from '../components/Welcome';
+import { Canvas2D } from '../components/Canvas2D';
 
-interface APIData {
+export interface HelloAPIData {
   message: string;
 }
+type Labels = {
+  [Property in keyof typeof EMOTIONS]: number;
+};
+interface APIData {
+  labels: Labels;
+  logits: number[];
+}
+type TAPIState = {
+  apiData: APIData | null;
+  setApiData: React.Dispatch<React.SetStateAction<APIData | null>>;
+};
+export const DataContext = React.createContext<TAPIState | null>(null);
 
 export function App() {
+  const [helloApiData, setHelloApiData] = React.useState<HelloAPIData | null>(
+    null
+  );
   const [apiData, setApiData] = React.useState<APIData | null>(null);
 
-  // fetch data from api and store in apiData state
+  // fetch data from api and store in helloApiData state
   React.useEffect(() => {
     const fetchData = async () => {
       const result = await fetch('http://127.0.0.1:8000');
       const data = await result.json();
-      setApiData(data);
+      setHelloApiData(data);
     };
     fetchData();
   }, []);
   React.useEffect(() => {
-    console.log(apiData);
-  }, [apiData]);
+    console.log(helloApiData);
+  }, [helloApiData]);
+
   return (
-    <div>
-      <h1>Hello frontend!</h1>
-      <p>API data: {apiData?.message ?? 'Loading...'}</p>
-    </div>
+    <DataContext.Provider value={{ apiData, setApiData }}>
+      <Navbar />
+      {apiData ? <Canvas2D /> : <Welcome helloApiData={helloApiData} />}
+    </DataContext.Provider>
   );
 }
 

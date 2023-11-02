@@ -39,3 +39,8 @@ testem.log
 Thumbs.db
 
 .nx/cache
+
+
+# Python related files
+__pycache__/
+venv/
