@@ -44,3 +44,6 @@ Thumbs.db
 # Python related files
 __pycache__/
 venv/
+
+# api related files
+dataset/

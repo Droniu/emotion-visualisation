@@ -31,11 +31,13 @@ class EmotionModelWrapper():
 
     def produce_emotions(self, tokens):
         """ Run model and return emotions.
-            TODO: retrieve features vector.
         """
         with no_grad():
             outputs = self.__model(**tokens)
-            return outputs.logits.numpy().tolist(), self.__get_propability(outputs.logits)
+            features = outputs.hidden_states[-1][:, 0, :].cpu().detach().numpy()
+            logits = outputs.logits.numpy().tolist()
+            labels = self.__get_propability(outputs.logits)
+            return features, logits, labels
 
     def __get_propability(self, logits: Tensor):
         propabilities = sigmoid(logits)
