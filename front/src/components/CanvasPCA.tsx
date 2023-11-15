@@ -41,7 +41,6 @@ export const CanvasPCA = () => {
     fetch('http://127.0.0.1:8000/pca') // Endpoint /pca
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setPcaData({
           points: data.points,
           points_labels: data.points_labels,
@@ -49,7 +48,6 @@ export const CanvasPCA = () => {
       })
       .catch((err) => {
         console.log(err.message);
-        // setLoading(false);
       });
   }, []);
 

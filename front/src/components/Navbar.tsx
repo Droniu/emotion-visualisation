@@ -2,13 +2,17 @@ import React, { useState } from 'react';
 import { ThemeToggle } from './ThemeToggle';
 import { PromptBar } from './PromptBar';
 
+interface ChildComponentProps {
+  onSelectedOptionChange: (selectedOption: string) => void;
+}
 
-export const Navbar = () => {
-  const options = ['Opcja 1', 'Opcja 2'];
+export const Navbar: React.FC<ChildComponentProps> = ({ onSelectedOptionChange }) => {
+  const options = ['Individual Analysis', 'PCA Analysis'];
   const [selectedOption, setSelectedOption] = useState(options[0]);
 
   const handleSelect = (option: string) => {
     setSelectedOption(option);
+    onSelectedOptionChange(option);
   };
 
   const HiddenComponent = () => {
