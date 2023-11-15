@@ -12,7 +12,7 @@ export const Navbar = () => {
   };
 
   const HiddenComponent = () => {
-    if (selectedOption === 'Opcja 1') {
+    if (selectedOption === 'Individual Analysis') {
       return <PromptBar></PromptBar>;
     }
   };
@@ -24,19 +24,19 @@ export const Navbar = () => {
           🥰 Emotion Visualisation
         </a>
         <HiddenComponent></HiddenComponent>
-        <details className="dropdown dropdown-right">
-          <summary className="m-1 btn">drop</summary>
-          <ul className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+      </div>
+      <div className="flex-1"></div>
+      <div className="flex-none">
+      <div className="dropdown dropdown-end">
+          <label tabIndex={0} className="btn m-1">{selectedOption}</label>
+          <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
             {options.map((option) => (
               <li>
                 <a onClick={() => handleSelect(option)}> {option}</a>
               </li>
             ))}
           </ul>
-        </details>
-      </div>
-      <div className="flex-1"></div>
-      <div className="flex-none">
+        </div>
         <ThemeToggle />
       </div>
     </div>

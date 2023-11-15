@@ -23,15 +23,12 @@ export const PromptBar = () => {
           throw new Error('Context not found');
         }
         ctx.setApiData(data);
-        handleFetchPCAData();
         setLoading(false);
       })
       .catch((err) => {
         console.log(err.message);
         setLoading(false);
       });
-    handleFetchPCAData();
-  };
   };
 
   const handlePromptChange = (e: React.ChangeEvent<HTMLInputElement>) => {
