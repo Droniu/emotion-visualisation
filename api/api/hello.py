@@ -30,8 +30,13 @@ async def main_route():
 
 
 @app.get("/pca")
-async def get_pca_data():
+async def get_pca_data(size: int | None = None):
     data_dimensions, labels = dataset.retrieve_train_set()
+
+    if size is not None:
+        data_dimensions = data_dimensions[:size, :]
+        labels = labels[:size]
+
     converted_dimensions = data_dimensions.tolist()
     converted_labels = labels.tolist()
 
