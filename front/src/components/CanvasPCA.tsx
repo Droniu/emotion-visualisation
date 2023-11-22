@@ -57,9 +57,6 @@ export const CanvasPCA = () => {
       });
   }, []);
 
-  if (!ctx?.apiData) {
-    return null;
-  }
   return (
     <ResponsiveContainer width="100%" height="80%">
       <ScatterChart>

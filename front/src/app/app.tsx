@@ -50,7 +50,7 @@ export function App() {
   return (
     <DataContext.Provider value={{ apiData, setApiData }}>
       <Navbar onSelectedOptionChange={handleDropdownChange} />
-      {apiData ? (chartAnalysis ? <Canvas2D/> :  <CanvasPCA/>) : <Welcome helloApiData={helloApiData} />}
+      {chartAnalysis? (apiData ? <Canvas2D/> : <Welcome helloApiData={helloApiData} />) : <CanvasPCA/>}
     </DataContext.Provider>
   );
 }
