@@ -1,16 +1,17 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Navbar } from '../components/Navbar';
 
 import { EMOTIONS } from '../consts';
 import { Welcome } from '../components/Welcome';
 import { Canvas2D } from '../components/Canvas2D';
+import { CanvasPCA } from '../components/CanvasPCA';
 
 export interface HelloAPIData {
   message: string;
 }
 type Labels = {
   [Property in keyof typeof EMOTIONS]: number;
-};
+} 
 interface APIData {
   labels: Labels;
   logits: number[];
@@ -19,6 +20,7 @@ type TAPIState = {
   apiData: APIData | null;
   setApiData: React.Dispatch<React.SetStateAction<APIData | null>>;
 };
+
 export const DataContext = React.createContext<TAPIState | null>(null);
 
 export function App() {
@@ -26,6 +28,7 @@ export function App() {
     null
   );
   const [apiData, setApiData] = React.useState<APIData | null>(null);
+  const [chartAnalysis, setchartAnalysis] = useState(true);
 
   // fetch data from api and store in helloApiData state
   React.useEffect(() => {
@@ -40,10 +43,14 @@ export function App() {
     console.log(helloApiData);
   }, [helloApiData]);
 
+  const handleDropdownChange = (newState: string) =>{
+    setchartAnalysis(newState==='Individual Analysis');
+  }
+  
   return (
     <DataContext.Provider value={{ apiData, setApiData }}>
-      <Navbar />
-      {apiData ? <Canvas2D /> : <Welcome helloApiData={helloApiData} />}
+      <Navbar onSelectedOptionChange={handleDropdownChange} />
+      {chartAnalysis? (apiData ? <Canvas2D/> : <Welcome helloApiData={helloApiData} />) : <CanvasPCA/>}
     </DataContext.Provider>
   );
 }

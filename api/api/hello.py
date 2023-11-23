@@ -4,6 +4,7 @@ from .models import EmotionModelWrapper, EmotionTokenizerWrapper
 from .api_models import Text
 from .dataset import Dataset
 import asyncio
+from typing import Union
 
 app = FastAPI()
 tokenizer = EmotionTokenizerWrapper()
@@ -14,6 +15,9 @@ dataset = Dataset()
 origins = [
     "http://localhost:4200",
 ]
+
+saved_inputs = []
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,8 +34,13 @@ async def main_route():
 
 
 @app.get("/pca")
-async def get_pca_data():
+async def get_pca_data(size: Union[int, None] = None):
     data_dimensions, labels = dataset.retrieve_train_set()
+
+    if size is not None:
+        data_dimensions = data_dimensions[:size, :]
+        labels = labels[:size]
+
     converted_dimensions = data_dimensions.tolist()
     converted_labels = labels.tolist()
 
@@ -49,6 +58,16 @@ async def send_input(text: Text):
     features, logits, labels = await model_task
     points = dataset.count_pca_for_point(features).tolist()
 
-    return {"logits": logits,
-            "labels": labels,
-            "points": points}
+    object_to_return = {
+        # "logits": logits,
+        "labels": labels,
+        "points": points,
+        "input": text.text
+    }
+    saved_inputs.append(object_to_return)
+    return object_to_return
+
+
+@app.get("/savedText")
+async def retrieve_saved_emotions():
+    return saved_inputs

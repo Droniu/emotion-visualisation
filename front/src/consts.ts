@@ -28,3 +28,34 @@ export const EMOTIONS = {
   sadness: 'sadness',
   surprise: 'surprise',
 } as const;
+
+export const COLORS = {
+  admiration: '#FFD700', // Gold
+  amusement: '#FFB6C1', // Light Pink
+  anger: '#FF0000', // Red
+  annoyance: '#FF4500', // Orange Red
+  approval: '#008000', // Green
+  caring: '#FFC0CB', // Pink
+  confusion: '#D3D3D3', // Light Grey
+  curiosity: '#FFFF00', // Yellow
+  desire: '#FF1493', // Deep Pink
+  disappointment: '#778899', // Light Slate Grey
+  disapproval: '#A9A9A9', // Dark Grey
+  disgust: '#556B2F', // Dark Olive Green
+  embarrassment: '#FF69B4', // Hot Pink
+  excitement: '#FFA500', // Orange
+  fear: '#800080', // Purple
+  gratitude: '#FFD700', // Gold
+  grief: '#000000', // Black
+  joy: '#FFFACD', // Lemon Chiffon
+  love: '#FF69B4', // Hot Pink
+  nervousness: '#ADD8E6', // Light Blue
+  neutral: '#FFFFFF', // White
+  optimism: '#00FF00', // Lime
+  pride: '#8B4513', // Saddle Brown
+  realization: '#FF6347', // Tomato
+  relief: '#20B2AA', // Light Sea Green
+  remorse: '#4682B4', // Steel Blue
+  sadness: '#1E90FF', // Dodger Blue
+  surprise: '#FFC0CB', // Pink
+} as const;
