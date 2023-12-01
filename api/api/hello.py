@@ -2,15 +2,24 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .models import EmotionModelWrapper, EmotionTokenizerWrapper
 from .api_models import Text
-from .dataset import Dataset
+from .dataset import Dataset, NumDimm
 import asyncio
 from typing import Union
+import os
+import gdown
+import pandas as pd
+
+__SAVE_DIR = "dataset/train_set.pickle"
+os.makedirs("dataset/", exist_ok=True)
+if not os.path.isfile(__SAVE_DIR):
+    gdown.download("https://drive.google.com/uc?id=1J4e9ULUSK0vwvONUgtVhfq34MKHJly7o", __SAVE_DIR)
+train_set = pd.read_pickle(__SAVE_DIR)
 
 app = FastAPI()
 tokenizer = EmotionTokenizerWrapper()
 model = EmotionModelWrapper()
-dataset = Dataset()
-
+pca_2d = Dataset(train_set, num_dim=2)
+pca_3d = Dataset(train_set, num_dim=3)
 
 origins = [
     "http://localhost:4200",
@@ -34,19 +43,30 @@ async def main_route():
 
 
 @app.get("/pca")
-async def get_pca_data(size: Union[int, None] = None):
-    data_dimensions, labels = dataset.retrieve_train_set()
+async def get_pca_data(size: Union[int, None] = None, dimensions: Union[NumDimm, NumDimm] = NumDimm.TWO):
+
+    if dimensions == NumDimm.TWO:
+        data_dimensions, labels, texts = pca_2d.retrieve_train_set()
+
+    elif dimensions == NumDimm.THREE:
+        data_dimensions, labels, texts = pca_3d.retrieve_train_set()
+
+    else:
+        raise Exception()
 
     if size is not None:
         data_dimensions = data_dimensions[:size, :]
         labels = labels[:size]
+        texts = texts[:size]
 
     converted_dimensions = data_dimensions.tolist()
     converted_labels = labels.tolist()
+    converted_texts = texts.tolist()
 
     return {
         "points": converted_dimensions,
-        "points_labels": converted_labels
+        "points_labels": converted_labels,
+        "points_texts": converted_texts
     }
 
 
@@ -56,7 +76,7 @@ async def send_input(text: Text):
     tokens = tokenizer.tokenize(text.text)
     model_task = loop.run_in_executor(None, model.produce_emotions, tokens)
     features, logits, labels = await model_task
-    points = dataset.count_pca_for_point(features).tolist()
+    points = pca_2d.count_pca_for_point(features).tolist()
 
     object_to_return = {
         # "logits": logits,

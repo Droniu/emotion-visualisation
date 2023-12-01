@@ -1,33 +1,35 @@
-import pandas as pd
-import gdown
-import os
 import numpy as np
+from enum import Enum
 
-
-from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler, normalize
+
+
+class NumDimm(Enum):
+    TWO = "2"
+    THREE = "3"
 
 
 class Dataset:
-    """Class that loads pickle file to dataframe
+    """Class that reduces dimension to 2D or 3D by using PCA
         and returns most important info.
     """
-    SAVE_DIR = "dataset/train_set.pickle"
 
-    def __init__(self) -> None:
-        os.makedirs("dataset/", exist_ok=True)
-        if not os.path.isfile(self.SAVE_DIR):
-            gdown.download("https://drive.google.com/uc?id=1HM82QkwPKsUbsbxqHN3Ii5HC6POFJZDy", self.SAVE_DIR)
-        self.__df = pd.read_pickle(self.SAVE_DIR)
-        self.__pca = PCA(n_components=2)
+    def __init__(self, dataframe, num_dim=2) -> None:
+
+
+        self.__dataframe = dataframe  # pd.read_pickle(self.__SAVE_DIR)
+
+        self.__pca = PCA(n_components=num_dim)
         self.__scaler = StandardScaler()
-        train_features = np.vstack(self.__df.features.values)
+        train_features = np.vstack(self.__dataframe.features.values)
+        train_features = normalize(train_features)
         scaled_features = self.__scaler.fit_transform(train_features)
         self.__reduced_dim = self.__pca.fit_transform(scaled_features)
-
 
     def count_pca_for_point(self, features):
         return self.__pca.transform(features)
 
     def retrieve_train_set(self):
-        return self.__reduced_dim, self.__df["best_label"].values
+        # print(self.__dataframe.head())
+        return self.__reduced_dim, self.__dataframe["best_label"].values, self.__dataframe['summary_y'].values
