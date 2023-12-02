@@ -1,56 +1,48 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Navbar } from '../components/Navbar';
 
 import { EMOTIONS } from '../consts';
 import { Welcome } from '../components/Welcome';
+import { IndividualAnalysis } from '../components/IndividualAnalysis';
 import { Canvas2D } from '../components/Canvas2D';
-import { CanvasPCA } from '../components/CanvasPCA';
 
 export interface HelloAPIData {
   message: string;
 }
-type Labels = {
+export type Labels = {
   [Property in keyof typeof EMOTIONS]: number;
-} 
+};
 interface APIData {
   labels: Labels;
   logits: number[];
 }
-type TAPIState = {
+type AppContext = {
   apiData: APIData | null;
   setApiData: React.Dispatch<React.SetStateAction<APIData | null>>;
 };
 
-export const DataContext = React.createContext<TAPIState | null>(null);
+export type Analysis = 'individual' | 'pca2d' | 'pca3d';
+
+export const DataContext = React.createContext<AppContext | null>(null);
 
 export function App() {
-  const [helloApiData, setHelloApiData] = React.useState<HelloAPIData | null>(
-    null
-  );
   const [apiData, setApiData] = React.useState<APIData | null>(null);
-  const [chartAnalysis, setchartAnalysis] = useState(true);
+  const [maxPoints, setMaxPoints] = useState(5000);
+  const [chartAnalysis, setChartAnalysis] = useState<Analysis>('individual');
 
-  // fetch data from api and store in helloApiData state
-  React.useEffect(() => {
-    const fetchData = async () => {
-      const result = await fetch('http://127.0.0.1:8000');
-      const data = await result.json();
-      setHelloApiData(data);
-    };
-    fetchData();
-  }, []);
-  React.useEffect(() => {
-    console.log(helloApiData);
-  }, [helloApiData]);
-
-  const handleDropdownChange = (newState: string) =>{
-    setchartAnalysis(newState==='Individual Analysis');
-  }
-  
   return (
     <DataContext.Provider value={{ apiData, setApiData }}>
-      <Navbar onSelectedOptionChange={handleDropdownChange} />
-      {chartAnalysis? (apiData ? <Canvas2D/> : <Welcome helloApiData={helloApiData} />) : <CanvasPCA/>}
+      <div className="h-full flex flex-col justify-start items-center">
+        <Navbar
+          analysis={chartAnalysis}
+          onAnalysisChange={(val: Analysis) => setChartAnalysis(val)}
+          maxPoints={maxPoints}
+          onMaxPointsChange={setMaxPoints}
+        />
+        {apiData === null && chartAnalysis === 'individual' && <Welcome />}
+        {chartAnalysis === 'individual' && <IndividualAnalysis />}
+        {chartAnalysis === 'pca2d' && <Canvas2D maxPoints={maxPoints} />}
+      </div>
     </DataContext.Provider>
   );
 }

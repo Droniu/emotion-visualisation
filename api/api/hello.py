@@ -22,7 +22,8 @@ pca_2d = Dataset(train_set, num_dim=2)
 pca_3d = Dataset(train_set, num_dim=3)
 
 origins = [
-    "http://localhost:4200",
+    "http://localhost:4200",  # dev config
+    "http://localhost:4300",  # prod config
 ]
 
 saved_inputs = []

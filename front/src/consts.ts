@@ -19,7 +19,6 @@ export const EMOTIONS = {
   joy: 'joy',
   love: 'love',
   nervousness: 'nervousness',
-  neutral: 'neutral',
   optimism: 'optimism',
   pride: 'pride',
   realization: 'realization',
@@ -27,6 +26,7 @@ export const EMOTIONS = {
   remorse: 'remorse',
   sadness: 'sadness',
   surprise: 'surprise',
+  neutral: 'neutral',
 } as const;
 
 export const COLORS = {
@@ -50,7 +50,6 @@ export const COLORS = {
   joy: '#FFFACD', // Lemon Chiffon
   love: '#FF69B4', // Hot Pink
   nervousness: '#ADD8E6', // Light Blue
-  neutral: '#FFFFFF', // White
   optimism: '#00FF00', // Lime
   pride: '#8B4513', // Saddle Brown
   realization: '#FF6347', // Tomato
@@ -58,4 +57,12 @@ export const COLORS = {
   remorse: '#4682B4', // Steel Blue
   sadness: '#1E90FF', // Dodger Blue
   surprise: '#FFC0CB', // Pink
+  neutral: '#f9f1f1', // Offwhite
+} as const;
+
+export const BOUNDS = {
+  minX: -25,
+  maxX: 25,
+  minY: -25,
+  maxY: 25,
 } as const;

@@ -67,6 +67,13 @@
         "command": "uvicorn api.hello:app --reload",
         "cwd": "./api"
       }
+    },
+    "preview": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "uvicorn api.hello:app --reload",
+        "cwd": "./api"
+      }
     }
   },
   "tags": []
