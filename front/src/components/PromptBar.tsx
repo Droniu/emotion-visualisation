@@ -1,14 +1,17 @@
 import React from 'react';
-import { DataContext} from '../app/app';
+import { Analysis, DataContext } from '../app/app';
 
-export const PromptBar = () => {
+interface PromptBarProps {
+  analysis: Analysis;
+}
 
+export const PromptBar = ({ analysis }: PromptBarProps) => {
   const [prompt, setPrompt] = React.useState('');
   const [loading, setLoading] = React.useState(false);
 
   const ctx = React.useContext(DataContext);
 
-  const handleAddPrompt = () => {
+  const handleAnalyzePrompt = () => {
     setLoading(true);
     fetch('http://127.0.0.1:8000/inputText', {
       method: 'POST',
@@ -46,7 +49,7 @@ export const PromptBar = () => {
       <button
         className="btn btn-sm btn-primary"
         disabled={loading || !prompt}
-        onClick={handleAddPrompt}
+        onClick={handleAnalyzePrompt}
       >
         {loading ? (
           <span className="loading loading-spinner loading-md"></span>
@@ -66,7 +69,7 @@ export const PromptBar = () => {
             />
           </svg>
         )}
-        Analyze
+        {analysis === 'individual' ? ' Analyze' : ' Add'}
       </button>
     </div>
   );
