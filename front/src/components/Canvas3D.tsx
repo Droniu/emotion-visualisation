@@ -11,6 +11,7 @@ import { DataContext } from '../app/app';
 import { COLORS, RAW_COLORS } from '../consts';
 import { findKeyOfMaxValue } from '../utils';
 import { PCAData, UserPoints } from './Canvas2D';
+import { Legend } from './Legend';
 
 interface Canvas3DProps {
   maxPoints: number;
@@ -49,24 +50,30 @@ export const Canvas3D = ({ maxPoints }: Canvas3DProps) => {
   }, [ctx]);
 
   return (
-    <div id="pca3d" className="grow w-full p-12 relative">
-      {pcaData && (
-        <Canvas>
-          <axesHelper args={[20]} />
-          <axesHelper args={[-20]} />
-          <CameraPositioner position={[-40, 15, 35]} zoom={0.6} />
-          <DynamicPoints
-            pcaData={pcaData}
-            maxPoints={maxPoints}
-            key={maxPoints} // Key based on maxPoints
-          />
-          {userPoints && (
-            <CustomPoints userPoints={userPoints} key={maxPoints + 'custom'} />
-          )}
-          <OrbitControls />
-        </Canvas>
-      )}
-    </div>
+    <>
+      <div id="pca3d" className="grow w-full pv-12 relative">
+        {pcaData && (
+          <Canvas>
+            <axesHelper args={[20]} />
+            <axesHelper args={[-20]} />
+            <CameraPositioner position={[-40, 15, 35]} zoom={0.6} />
+            <DynamicPoints
+              pcaData={pcaData}
+              maxPoints={maxPoints}
+              key={maxPoints} // Key based on maxPoints
+            />
+            {userPoints && (
+              <CustomPoints
+                userPoints={userPoints}
+                key={maxPoints + 'custom'}
+              />
+            )}
+            <OrbitControls />
+          </Canvas>
+        )}
+      </div>
+      <Legend />
+    </>
   );
 };
 
