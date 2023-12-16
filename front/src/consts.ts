@@ -60,6 +60,37 @@ export const COLORS = {
   neutral: '#f9f1f1', // Offwhite
 } as const;
 
+export const RAW_COLORS = [
+  [1, 0.843, 0], // Gold
+  [1, 0.713, 0.757], // Light Pink
+  [1, 0, 0], // Red
+  [1, 0.271, 0], // Orange Red
+  [0, 0.502, 0], // Green
+  [1, 0.753, 0.796], // Pink
+  [0.827, 0.827, 0.827], // Light Grey
+  [1, 1, 0], // Yellow
+  [1, 0.078, 0.576], // Deep Pink
+  [0.467, 0.533, 0.6], // Light Slate Grey
+  [0.663, 0.663, 0.663], // Dark Grey
+  [0.333, 0.42, 0.184], // Dark Olive Green
+  [1, 0.412, 0.706], // Hot Pink
+  [1, 0.647, 0], // Orange
+  [0.502, 0, 0.502], // Purple
+  [1, 0.843, 0], // Gold
+  [0, 0, 0], // Black
+  [1, 0.98, 0.804], // Lemon Chiffon
+  [1, 0.412, 0.706], // Hot Pink
+  [0.678, 0.847, 0.902], // Light Blue
+  [0, 1, 0], // Lime
+  [0.545, 0.271, 0.075], // Saddle Brown
+  [1, 0.388, 0.278], // Tomato
+  [0.125, 0.698, 0.667], // Light Sea Green
+  [0.275, 0.51, 0.706], // Steel Blue
+  [0.118, 0.565, 1], // Dodger Blue
+  [1, 0.753, 0.796], // Pink
+  [0.976, 0.945, 0.945], // Offwhite
+];
+
 export const BOUNDS = {
   minX: -25,
   maxX: 25,

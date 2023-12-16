@@ -11,15 +11,16 @@ interface Canvas2DProps {
   maxPoints: number;
 }
 
-interface PCAData {
+export interface PCAData {
   points_labels: number[];
   points_texts: string[];
   points: number[][];
 }
 
-interface UserPoints {
+export interface UserPoints {
   input: string;
-  points: number[][];
+  points_pca: number[];
+  points_umap: number[];
   labels: Labels;
 }
 
@@ -173,49 +174,47 @@ export function Canvas2D({ maxPoints }: Canvas2DProps) {
                 }}
               />
             ))}
-            {userPoints.map((point) => {
-              return point.points.map((d, i) => {
-                const emotion = findKeyOfMaxValue(
-                  point.labels
-                ) as keyof typeof COLORS;
-                return (
-                  <Star
-                    numPoints={5}
-                    key={'star' + i}
-                    x={d3.scaleLinear(
-                      [BOUNDS.minX, BOUNDS.maxX],
-                      [0, svgRef.current?.clientWidth ?? 0]
-                    )(d[0])}
-                    y={d3.scaleLinear(
-                      [BOUNDS.minY, BOUNDS.maxY],
-                      [svgRef.current?.clientHeight ?? 0, 0]
-                    )(d[1])}
-                    outerRadius={12}
-                    innerRadius={6}
-                    fill={COLORS[emotion ?? 'neutral']}
-                    stroke={theme === 'dark' ? 'white' : 'black'}
-                    onMouseOver={(e) => {
-                      const node = e.target;
-                      node.to({ radius: 8 });
-                      const x = node.getStage()?.getPointerPosition()?.x;
-                      const y = node.getStage()?.getPointerPosition()?.y;
-                      if (x && y) {
-                        setTooltip({
-                          show: true,
-                          x: x + 10, // adjust position as needed
-                          y: y,
-                          content: point.input,
-                          emotion: emotion ?? '',
-                        });
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.to({ radius: 3 });
-                      setTooltip({ ...tooltip, show: false });
-                    }}
-                  />
-                );
-              });
+            {userPoints.map((point, i) => {
+              const emotion = findKeyOfMaxValue(
+                point.labels
+              ) as keyof typeof COLORS;
+              return (
+                <Star
+                  numPoints={5}
+                  key={'star' + i}
+                  x={d3.scaleLinear(
+                    [BOUNDS.minX, BOUNDS.maxX],
+                    [0, svgRef.current?.clientWidth ?? 0]
+                  )(point.points_pca[0])}
+                  y={d3.scaleLinear(
+                    [BOUNDS.minY, BOUNDS.maxY],
+                    [svgRef.current?.clientHeight ?? 0, 0]
+                  )(point.points_pca[1])}
+                  outerRadius={12}
+                  innerRadius={6}
+                  fill={COLORS[emotion ?? 'neutral']}
+                  stroke={theme === 'dark' ? 'white' : 'black'}
+                  onMouseOver={(e) => {
+                    const node = e.target;
+                    node.to({ radius: 8 });
+                    const x = node.getStage()?.getPointerPosition()?.x;
+                    const y = node.getStage()?.getPointerPosition()?.y;
+                    if (x && y) {
+                      setTooltip({
+                        show: true,
+                        x: x + 10, // adjust position as needed
+                        y: y,
+                        content: point.input,
+                        emotion: emotion ?? '',
+                      });
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.to({ radius: 3 });
+                    setTooltip({ ...tooltip, show: false });
+                  }}
+                />
+              );
             })}
           </Layer>
         </Stage>
