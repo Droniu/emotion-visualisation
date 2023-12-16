@@ -5,6 +5,7 @@ import { EMOTIONS } from '../consts';
 import { Welcome } from '../components/Welcome';
 import { IndividualAnalysis } from '../components/IndividualAnalysis';
 import { Canvas2D } from '../components/Canvas2D';
+import { Canvas3D } from '../components/Canvas3D';
 
 export interface HelloAPIData {
   message: string;
@@ -42,6 +43,7 @@ export function App() {
         {apiData === null && chartAnalysis === 'individual' && <Welcome />}
         {chartAnalysis === 'individual' && <IndividualAnalysis />}
         {chartAnalysis === 'pca2d' && <Canvas2D maxPoints={maxPoints} />}
+        {chartAnalysis === 'pca3d' && <Canvas3D maxPoints={maxPoints} />}
       </div>
     </DataContext.Provider>
   );
