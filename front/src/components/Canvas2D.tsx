@@ -12,6 +12,12 @@ interface Canvas2DProps {
   endpoint: string;
 }
 
+export interface PCAData {
+  points_labels: number[];
+  points_texts: string[];
+  points: number[][];
+}
+
 export interface PointsData {
   points_labels: number[];
   points_texts: string[];

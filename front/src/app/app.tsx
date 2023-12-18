@@ -6,7 +6,6 @@ import { Welcome } from '../components/Welcome';
 import { IndividualAnalysis } from '../components/IndividualAnalysis';
 import { Canvas2D } from '../components/Canvas2D';
 import { Canvas3D } from '../components/Canvas3D';
-import { UMAP } from '../components/UMAP';
 
 export interface HelloAPIData {
   message: string;
