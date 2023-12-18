@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Stage, Layer, Circle, Star } from 'react-konva';
 import * as d3 from 'd3';
-import { BOUNDS, COLORS } from '../consts';
+import { BOUNDS, COLORS, BOUNDS_UMAP } from '../consts';
 import { Tooltip } from './Tooltip';
 import { DataContext, Labels } from '../app/app';
 import { findKeyOfMaxValue } from '../utils';
@@ -85,26 +85,12 @@ export function Canvas2D({ maxPoints, endpoint }: Canvas2DProps) {
     ) {
       const width = svgRef.current.clientWidth;
       const height = svgRef.current.clientHeight;
-
-      let minX_umap = Infinity;
-      let maxX_umap = -Infinity;
-      let minY_umap = Infinity;
-      let maxY_umap = -Infinity;
-
-      if (pointsData) {
-        const { points } = pointsData;
-        
-        points.forEach(([x, y]) => {
-          minX_umap = Math.min(minX_umap, x);
-          maxX_umap = Math.max(maxX_umap, x);
-          minY_umap = Math.min(minY_umap, y);
-          maxY_umap = Math.max(maxY_umap, y);
-        });
-      }
+      
+      const boundsToUse = endpoint === 'pca' ? BOUNDS : BOUNDS_UMAP;
 
       // Update scales
-      const newXScale = d3.scaleLinear([minX_umap, maxX_umap], [0, width]);
-      const newYScale = d3.scaleLinear([minY_umap, maxY_umap], [height, 0]);
+      const newXScale = d3.scaleLinear([boundsToUse.minX, boundsToUse.maxX], [0, width]);
+      const newYScale = d3.scaleLinear([boundsToUse.minY, boundsToUse.maxY], [height, 0]);
 
       // Update axes - only if scales are defined
       if (newXScale && newYScale) {
@@ -167,11 +153,11 @@ export function Canvas2D({ maxPoints, endpoint }: Canvas2DProps) {
               <Circle
                 key={i}
                 x={d3.scaleLinear(
-                  [BOUNDS.minX, BOUNDS.maxX],
+                  [endpoint === 'pca' ? BOUNDS.minX : BOUNDS_UMAP.minX, endpoint === 'pca' ? BOUNDS.maxX : BOUNDS_UMAP.maxX],
                   [0, svgRef.current?.clientWidth ?? 0]
                 )(d[0])}
                 y={d3.scaleLinear(
-                  [BOUNDS.minY, BOUNDS.maxY],
+                  [endpoint === 'pca' ? BOUNDS.minY : BOUNDS_UMAP.minY, endpoint === 'pca' ? BOUNDS.maxY : BOUNDS_UMAP.maxY],
                   [svgRef.current?.clientHeight ?? 0, 0]
                 )(d[1])}
                 radius={3}
