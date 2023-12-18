@@ -9,7 +9,7 @@ import { useLocalStorage } from '@uidotdev/usehooks';
 
 interface Canvas2DProps {
   maxPoints: number;
-  endpoint: string;
+  endpoint: 'pca' | 'umap';
 }
 
 export interface PCAData {
