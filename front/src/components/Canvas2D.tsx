@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Stage, Layer, Circle, Star } from 'react-konva';
 import * as d3 from 'd3';
-import { BOUNDS, COLORS } from '../consts';
+import { BOUNDS, COLORS, BOUNDS_UMAP } from '../consts';
 import { Tooltip } from './Tooltip';
 import { DataContext, Labels } from '../app/app';
 import { findKeyOfMaxValue } from '../utils';
@@ -9,9 +9,16 @@ import { useLocalStorage } from '@uidotdev/usehooks';
 
 interface Canvas2DProps {
   maxPoints: number;
+  endpoint: 'pca' | 'umap';
 }
 
 export interface PCAData {
+  points_labels: number[];
+  points_texts: string[];
+  points: number[][];
+}
+
+export interface PointsData {
   points_labels: number[];
   points_texts: string[];
   points: number[][];
@@ -24,9 +31,9 @@ export interface UserPoints {
   labels: Labels;
 }
 
-export function Canvas2D({ maxPoints }: Canvas2DProps) {
+export function Canvas2D({ maxPoints, endpoint }: Canvas2DProps) {
   const [theme] = useLocalStorage('theme');
-  const [pcaData, setPcaData] = useState<PCAData | null>(null);
+  const [pointsData, setPointsData] = useState<PointsData | null>(null);
   const [userPoints, setUserPoints] = useState<UserPoints[] | null>(null);
   const [resized, setResized] = useState(1);
   const [tooltip, setTooltip] = useState({
@@ -43,10 +50,10 @@ export function Canvas2D({ maxPoints }: Canvas2DProps) {
   const layerRef = useRef(null);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/pca')
+    fetch('http://127.0.0.1:8000/'+endpoint)
       .then((response) => response.json())
       .then((data) => {
-        setPcaData({
+        setPointsData({
           points: data.points.slice(0, maxPoints),
           points_labels: data.points_labels.slice(0, maxPoints),
           points_texts: data.points_texts.slice(0, maxPoints),
@@ -71,17 +78,19 @@ export function Canvas2D({ maxPoints }: Canvas2DProps) {
 
   const updateScalesAndAxes = () => {
     if (
-      pcaData &&
+      pointsData &&
       svgRef.current &&
       svgRef.current.clientWidth > 0 &&
       svgRef.current.clientHeight > 0
     ) {
       const width = svgRef.current.clientWidth;
       const height = svgRef.current.clientHeight;
+      
+      const boundsToUse = endpoint === 'pca' ? BOUNDS : BOUNDS_UMAP;
 
       // Update scales
-      const newXScale = d3.scaleLinear([BOUNDS.minX, BOUNDS.maxX], [0, width]);
-      const newYScale = d3.scaleLinear([BOUNDS.minY, BOUNDS.maxY], [height, 0]);
+      const newXScale = d3.scaleLinear([boundsToUse.minX, boundsToUse.maxX], [0, width]);
+      const newYScale = d3.scaleLinear([boundsToUse.minY, boundsToUse.maxY], [height, 0]);
 
       // Update axes - only if scales are defined
       if (newXScale && newYScale) {
@@ -99,7 +108,7 @@ export function Canvas2D({ maxPoints }: Canvas2DProps) {
   };
 
   useEffect(() => {
-    if (!pcaData) return;
+    if (!pointsData) return;
     updateScalesAndAxes(); // Initial axes drawing
 
     // Resize event listener
@@ -115,9 +124,9 @@ export function Canvas2D({ maxPoints }: Canvas2DProps) {
       window.removeEventListener('resize', handleResize);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pcaData]);
+  }, [pointsData]);
 
-  const initialized = pcaData && userPoints && svgRef.current;
+  const initialized = pointsData && userPoints && svgRef.current;
 
   return (
     <div id="pca2d" className="grow w-full p-12 relative">
@@ -140,19 +149,19 @@ export function Canvas2D({ maxPoints }: Canvas2DProps) {
           className="absolute top-12 left-12"
         >
           <Layer ref={layerRef}>
-            {pcaData.points.map((d, i) => (
+            {pointsData.points.map((d, i) => (
               <Circle
                 key={i}
                 x={d3.scaleLinear(
-                  [BOUNDS.minX, BOUNDS.maxX],
+                  [endpoint === 'pca' ? BOUNDS.minX : BOUNDS_UMAP.minX, endpoint === 'pca' ? BOUNDS.maxX : BOUNDS_UMAP.maxX],
                   [0, svgRef.current?.clientWidth ?? 0]
                 )(d[0])}
                 y={d3.scaleLinear(
-                  [BOUNDS.minY, BOUNDS.maxY],
+                  [endpoint === 'pca' ? BOUNDS.minY : BOUNDS_UMAP.minY, endpoint === 'pca' ? BOUNDS.maxY : BOUNDS_UMAP.maxY],
                   [svgRef.current?.clientHeight ?? 0, 0]
                 )(d[1])}
                 radius={3}
-                fill={Object.values(COLORS)[pcaData.points_labels[i] ?? 0]}
+                fill={Object.values(COLORS)[pointsData.points_labels[i] ?? 0]}
                 onMouseOver={(e) => {
                   const node = e.target;
                   node.to({ radius: 8 });
@@ -163,8 +172,8 @@ export function Canvas2D({ maxPoints }: Canvas2DProps) {
                       show: true,
                       x: x + 10, // adjust position as needed
                       y: y,
-                      content: pcaData.points_texts[i],
-                      emotion: Object.keys(COLORS)[pcaData.points_labels[i]],
+                      content: pointsData.points_texts[i],
+                      emotion: Object.keys(COLORS)[pointsData.points_labels[i]],
                     });
                   }
                 }}

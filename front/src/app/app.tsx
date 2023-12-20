@@ -22,7 +22,7 @@ type AppContext = {
   setApiData: React.Dispatch<React.SetStateAction<APIData | null>>;
 };
 
-export type Analysis = 'individual' | 'pca2d' | 'pca3d';
+export type Analysis = 'individual' | 'pca2d' | 'pca3d' | 'umap';
 
 export const DataContext = React.createContext<AppContext | null>(null);
 
@@ -42,8 +42,9 @@ export function App() {
         />
         {apiData === null && chartAnalysis === 'individual' && <Welcome />}
         {chartAnalysis === 'individual' && <IndividualAnalysis />}
-        {chartAnalysis === 'pca2d' && <Canvas2D maxPoints={maxPoints} />}
+        {chartAnalysis === 'pca2d' && <Canvas2D maxPoints={maxPoints} endpoint={'pca'} />}
         {chartAnalysis === 'pca3d' && <Canvas3D maxPoints={maxPoints} />}
+        {chartAnalysis === 'umap' && <Canvas2D maxPoints={maxPoints} endpoint={'umap'} />}
       </div>
     </DataContext.Provider>
   );

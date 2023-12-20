@@ -22,6 +22,7 @@ export const Navbar: React.FC<ChildComponentProps> = ({
     individual: 'Individual Analysis',
     pca2d: '2D PCA Analysis',
     pca3d: '3D PCA Analysis',
+    umap: 'UMAP Analysis',
   } as const;
 
   return (

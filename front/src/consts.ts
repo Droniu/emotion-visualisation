@@ -97,3 +97,10 @@ export const BOUNDS = {
   minY: -25,
   maxY: 25,
 } as const;
+
+export const BOUNDS_UMAP = {
+  minX: 0,
+  maxX: 15,
+  minY: 0,
+  maxY: 15,
+} as const;
