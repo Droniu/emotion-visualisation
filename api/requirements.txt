@@ -3,3 +3,6 @@ transformers
 fastapi
 gdown
 scikit-learn
+uvicorn[standard]
+umap-learn
+pandas
